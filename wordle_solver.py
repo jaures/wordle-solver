@@ -19,7 +19,7 @@ class WordleSolver:
         # Setup tracking for letters
         wrong_spot = []
         correct_spot = dict([(i,[]) for i in range(5)])
-        # Setup solutions, guesses, and match_results
+        # Setup solutions, guesses
         solutions, guesses = self.word_list, []
         while len(guesses) < 5 or len(solutions) > 0:
             guesses.append(choice(solutions))
@@ -29,8 +29,8 @@ class WordleSolver:
                 guesses[-1] = choice(solutions)
                 print("[Skipping invalid word]\nNew Guess:", guesses[-1])
             # Return immediately once solution is found
-            if match_results == delims[0] * 5: 
-                return (True, "[Solution Found]")
+            if match_results == delims[0] * 5 : 
+                return (True, guesses[-1])
             # Check for matches
             for i, c in enumerate(match_results):
                 if c == delims[0]:                      # Letter is in correct spot
@@ -49,8 +49,13 @@ class WordleSolver:
 if __name__ == '__main__':
     import sys
     if len(sys.argv) == 3:
-        WordleSolver(sys.argv[1]).run(list(sys.argv[2]))
+        res, val = WordleSolver(sys.argv[1]).run(list(sys.argv[2]))
     elif len(sys.argv) == 2:
-        WordleSolver(sys.argv[1]).run()
+        res, val = WordleSolver(sys.argv[1]).run()
     else:
-        WordleSolver().run()
+        res, val = WordleSolver().run()
+        
+    if res: 
+        print("Solution Found: ", val)
+    else: 
+        print(val)
