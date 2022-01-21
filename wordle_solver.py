@@ -14,7 +14,13 @@ class WordleSolver:
         else:
             print("[/] Successfully loaded {} lines from dictionary.".format(len(self.word_list)))
             
-    def run(self, delims = ['x','o','.']):
+    # Generator Function for getting match_results
+    def _get_match_from_stdin(self, delims, fn=None):
+        if not fn:
+            fn = lambda: input("Enter  matches({}), misplaced({}), and misses({}) or <Enter> for invalid words:\n>> ".format(*delims))
+        yield fn()
+
+    def run(self, delims = ['x','o','.'], get_match_fn=_get_match_from_stdin, fn=None):
         if len(self.word_list) == 0: self.__init__()
         # Setup tracking for letters
         wrong_spot = []
@@ -25,7 +31,7 @@ class WordleSolver:
             guesses.append(choice(solutions))
             print("Guess:", guesses[-1])
             # Loop to cycle though invalid words
-            while (match_results := input("Enter  matches({}), misplaced({}), and misses({}) or <Enter> for invalid words:\n>> ".format(*delims))) == "": 
+            while (match_results := get_match_fn(delims, fn)) == "": 
                 guesses[-1] = choice(solutions)
                 print("[Skipping invalid word]\nNew Guess:", guesses[-1])
             # Return immediately once solution is found
